@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 // 認証情報
 const authModule = {
-  strict: ProcessingInstruction.env.NODE_ENV !== 'production',
+  strict: process.env.NODE_ENV !== 'production',
   namespaced: true,
   state: {
     username: '',
