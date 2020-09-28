@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import GlobalHeader from '@/components/GlobalHeader.vue'
-import GlobalMessage from '@/components/GlovalMessage.vue'
+import GlobalHeader from '../components/GlobalHeader'
+import GlobalMessage from '../components/GlobalMessage'
 
 export default {
   components: {
