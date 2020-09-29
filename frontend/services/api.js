@@ -17,8 +17,8 @@ api.interceptors.request.use(function (config) {
   // 認証用トークンがあればリクエストヘッダに乗せる
   const token = localStorage.getItem('access')
   if (token) {
-    config.headers.Authorization = 'JWT' + token
-    return congig
+    config.headers.Authorization = 'JWT ' + token
+    return config
   }
   return config
   
@@ -39,21 +39,21 @@ api.interceptors.response.use(function (response) {
     // バリデーションNG
     let messages = [].concat.apply([], Object.values(error.response.data))
     store.dispatch('message/setWarningMessages', { messages: messages})
-  }　else if (status === 401) {
+  }else if (status === 401) {
     // 認証エラー
     const token = localStorage.getItem('access')
     if (token != null) {
       message = 'ログイン有効期限切れ'
-    } else {
+    }else {
       message = '認証エラー'
     }
     store.dispatch('auth/logout')
     store.dispatch('message/setErrorMessage', { message: message })
-  } else if (status === 403) {
+  }else if (status === 403) {
     // 権限エラー
     message = '権限エラーです'
     store.dispatch('message/setErrorMessage', { message: message })
-  } else {
+  }else {
     // その他のエラー
     message = 'その他のエラーです'
     store.dispatch('message/setErrorMessage', { message: message })
