@@ -30,38 +30,38 @@
 </template>
 
 <script>
-import GlobalHeader from '../components/GlobalHeader'
-import GlobalMessage from '../components/GlobalMessage'
+  import GlobalHeader from '@/components/GlobalHeader.vue'
+  import GlobalMessage from '@/components/GlobalMessage.vue'
 
-export default {
-  components: {
-    GlobalHeader,
-    GlobalMessage
-  },
-  data() {
-    return {
-      form: {
-        username: '',
-        password: ''
+  export default {
+    components: {
+      GlobalHeader,
+      GlobalMessage
+    },
+    data () {
+      return {
+        form: {
+          username: '',
+          password: ''
+        }
+      }
+    },
+    methods: {
+      // ログインボタン押下
+      submitLogin: function () {
+        // ログイン
+        this.$store.dispatch('auth/login', {
+          username: this.form.username,
+          password: this.form.password
+        })
+          .then(() => {
+            console.log('Login succeeded.')
+            this.$store.dispatch('message/setInfoMessage', { message: 'ログインしました。' })
+            // クエリ文字列に「next」がなければ、ホーム画面へ
+            const next = this.$route.query.next || '/'
+            this.$router.replace(next)
+          })
       }
     }
-  },
-  methods: {
-    // ログインボタン押下
-    submitLogin: function() {
-      // ログイン
-      this.$store.dispatch('auth/login', {
-        username: this.form.username,
-        password: this.form.password
-      })
-      .then(() => {
-        console.log('Login succeeded.')
-        this.$store.dispatch('message/setInfoMessage', {message: 'ログインしました' })
-        // クエリ文字に「next」がなければホーム画面へ
-        const next = this.$route.query.next || '/'
-        this.$router.replace(next)
-      })
-    }
   }
-}
 </script>

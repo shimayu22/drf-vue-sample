@@ -1,5 +1,5 @@
 import axios from 'axios'
-import store from '../src/store'
+import store from '@/store'
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_ROOT_API,
@@ -21,7 +21,6 @@ api.interceptors.request.use(function (config) {
     return config
   }
   return config
-  
 }, function (error) {
   return Promise.reject(error)
 })
@@ -38,24 +37,24 @@ api.interceptors.response.use(function (response) {
   if (status === 400) {
     // バリデーションNG
     let messages = [].concat.apply([], Object.values(error.response.data))
-    store.dispatch('message/setWarningMessages', { messages: messages})
-  }else if (status === 401) {
+    store.dispatch('message/setWarningMessages', { messages: messages })
+  } else if (status === 401) {
     // 認証エラー
     const token = localStorage.getItem('access')
     if (token != null) {
       message = 'ログイン有効期限切れ'
-    }else {
+    } else {
       message = '認証エラー'
     }
     store.dispatch('auth/logout')
     store.dispatch('message/setErrorMessage', { message: message })
-  }else if (status === 403) {
+  } else if (status === 403) {
     // 権限エラー
-    message = '権限エラーです'
+    message = '権限エラーです。'
     store.dispatch('message/setErrorMessage', { message: message })
-  }else {
+  } else {
     // その他のエラー
-    message = 'その他のエラーです'
+    message = '想定外のエラーです。'
     store.dispatch('message/setErrorMessage', { message: message })
   }
   return Promise.reject(error)

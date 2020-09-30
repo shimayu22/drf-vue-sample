@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import api from '../services/api'
+import api from '@/services/api'
 
 Vue.use(Vuex)
 
@@ -17,11 +17,11 @@ const authModule = {
     isLoggedIn: state => state.isLoggedIn
   },
   mutations: {
-    set(state, payload) {
+    set (state, payload) {
       state.username = payload.user.username
       state.isLoggedIn = true
     },
-    clear(state) {
+    clear (state) {
       state.username = ''
       state.isLoggedIn = false
     }
@@ -30,22 +30,23 @@ const authModule = {
     /**
      * ログイン
      */
-    login(context, payload) {
+    login (context, payload) {
       return api.post('/auth/jwt/create/', {
         'username': payload.username,
         'password': payload.password
-      }).then(response => {
-        // 認証用トークンをlocalStrageに保存
-        localStorage.setItem('access', response.data.access)
-        // ユーザー情報を取得してstoreのユーザー情報を更新
-        return context.dispatch('reload').then(user => user)
       })
+        .then(response => {
+          // 認証用トークンをlocalStorageに保存
+          localStorage.setItem('access', response.data.access)
+          // ユーザー情報を取得してstoreのユーザー情報を更新
+          return context.dispatch('reload')
+        })
     },
     /**
      * ログアウト
      */
-    logout(context) {
-      // 認証用トークンをlocalStrageから削除
+    logout (context) {
+      // 認証用トークンをlocalStorageから削除
       localStorage.removeItem('access')
       // storeのユーザー情報をクリア
       context.commit('clear')
@@ -53,13 +54,14 @@ const authModule = {
     /**
      * ユーザー情報更新
      */
-    reload(context) {
-      return api.get('/auth/users/me/').then(response => {
-        const user = response.data
-        // storeのユーザー情報を更新
-        context.commit('set', { user: user })
-        return user
-      })
+    reload (context) {
+      return api.get('/auth/users/me/')
+        .then(response => {
+          const user = response.data
+          // storeのユーザー情報を更新
+          context.commit('set', { user: user })
+          return user
+        })
     }
   }
 }
@@ -79,7 +81,7 @@ const messageModule = {
     info: state => state.info
   },
   mutations: {
-    set(state, payload) {
+    set (state, payload) {
       if (payload.error) {
         state.error = payload.error
       }
@@ -90,7 +92,7 @@ const messageModule = {
         state.info = payload.info
       }
     },
-    clear(state) {
+    clear (state) {
       state.error = ''
       state.warnings = []
       state.info = ''
@@ -100,28 +102,28 @@ const messageModule = {
     /**
      * エラーメッセージ表示
      */
-    setErrorMessage(context, payload) {
+    setErrorMessage (context, payload) {
       context.commit('clear')
       context.commit('set', { 'error': payload.message })
     },
     /**
      * 警告メッセージ（複数）表示
      */
-    setWarningMessages(context, payload) {
+    setWarningMessages (context, payload) {
       context.commit('clear')
-      context.commit('set', { 'warnings': payload.message })
+      context.commit('set', { 'warnings': payload.messages })
     },
     /**
      * インフォメーションメッセージ表示
      */
-    setInfoMessage(context, payload) {
+    setInfoMessage (context, payload) {
       context.commit('clear')
       context.commit('set', { 'info': payload.message })
     },
     /**
      * 全メッセージ削除
      */
-    clearMessage(context) {
+    clearMessages (context) {
       context.commit('clear')
     }
   }

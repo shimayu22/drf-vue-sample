@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomePage from '../pages/HomePage'
-import LoginPage from '../pages/LoginPage'
-import store from '../src/store'
+import HomePage from '@/pages/HomePage'
+import LoginPage from '@/pages/LoginPage'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   mode: 'history',
-  // ログインが必要な画面には「requiresAuth1」フラグをつけておく
+  // ログインが必要な画面には「requiresAuth」フラグをつけておく
   routes: [
     { path: '/', component: HomePage, meta: { requiresAuth: true } },
     { path: '/login', component: LoginPage },
@@ -29,18 +29,17 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // ログインしている状態の場合
     if (isLoggedIn) {
-      console.log('User is already logged in . So, free to next.')
+      console.log('User is already logged in. So, free to next.')
       next()
-    //　ログインしていない状態の場合
+    // ログインしていない状態の場合
     } else {
       // まだ認証トークンが残っていればユーザー情報を再取得
       if (token != null) {
         console.log('User is not logged in. Trying to reload again.')
-
         store.dispatch('auth/reload')
           .then(() => {
             // 再取得できたらそのまま次へ
-            console.log('Successed to reload. So, free to next.')
+            console.log('Succeeded to reload. So, free to next.')
             next()
           })
           .catch(() => {
@@ -67,7 +66,7 @@ function forceToLoginPage (to, from, next) {
   next({
     path: '/login',
     // 遷移先のURLはクエリ文字として付加
-    query: {next: to.fullPath}
+    query: { next: to.fullPath }
   })
 }
 
